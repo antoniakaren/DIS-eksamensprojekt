@@ -9,7 +9,7 @@ import {
   sendMailToUser
 } from "../controllers/mailController.js";
 
-// Generel mail-side
+// Generel mail-sides
 router.get("/", renderMailPage);
 router.post("/", sendMail);
 
