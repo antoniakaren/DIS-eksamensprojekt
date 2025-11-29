@@ -2,6 +2,8 @@
 // Håndterer signup, login, logout og password-skift.
 
 import { User } from "../models/userModel.js";
+import { User } from "../models/userModel.js";
+import { encrypt} from "../crypto.js"; // ← tilføj denne
 
 /*
  * validatePassword(password)
@@ -64,9 +66,11 @@ async function signup(req, res) {
         msg: null 
       });
     }
+// Krypter email før vi sender den til modellen
+const encryptedEmail = encrypt(email);
 
     // Opretter bruger (User.createUser() hasher password)
-    const user = new User(null, name, username, email, password);
+const user = new User(null, name, username, encryptedEmail, password);
     const created = await user.createUser();
 
     // Opret session

@@ -1,5 +1,13 @@
 import { User } from "../models/userModel.js";
-import { mailToUser } from "../utils/mailer.js";
+import { decrypt } from "../utils/crypto.js";
+
+const user = await User.findUserID(userID);
+
+// Dekrypter brugerens email før den bruges
+const realEmail = decrypt(user.email);
+
+await mailToUser(realEmail, subject, fullMessage);
+
 
 /* Viser en formular til at sende mail til en bestemt bruger.
  * Route: GET /mail/user/:userID
