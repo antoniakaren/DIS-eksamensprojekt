@@ -1,35 +1,46 @@
-<!DOCTYPE html>
-<html lang="da">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Opret virksomhed</title>
-  <link rel="stylesheet" href="/styles.css" />
-</head>
-<body>
-  <main class="container">
-    <h1>Opret virksomhed</h1>
+<h1>Lav nyt opslag</h1>
 
-    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
-    <% if (msg)   { %><div class="alert alert-success"><%= msg %></div><% } %>
+<% if (typeof error !== "undefined" && error) { %>
+  <div class="alert alert-error"><%= error %></div>
+<% } %>
 
-    <form action="/users/signup" method="POST" class="form">
-      <label>Virksomhedsnavn</label>
-      <input type="text" name="name" required />
+<% if (typeof msg !== "undefined" && msg) { %>
+  <div class="alert alert-success"><%= msg %></div>
+<% } %>
 
-      <label>Brugernavn</label>
-      <input type="text" name="username" required />
+<form action="/upload" 
+      method="POST" 
+      enctype="multipart/form-data" 
+      class="new-post">
 
-      <label>Virksomheds-e-mail</label>
-      <input type="email" name="email" />
+  <!-- Tekstfelt -->
+  <textarea 
+    id="postText"
+    name="text" 
+    placeholder="Skriv et opslag..."
+    required
+  ></textarea>
 
-      <label>Kodeord</label>
-      <input type="password" name="password" required />
+  <!-- Dropzone -->
+  <div id="dropZone" class="dropzone">
+    Træk og slip billeder her – eller klik for at vælge
+  </div>
 
-      <button type="submit">Opret virksomhedskonto</button>
-    </form>
+  <!-- Selve file-input (skjult, aktiveres af JS) -->
+  <input 
+    id="postImage"
+    type="file" 
+    name="image" 
+    accept="image/*"
+    style="display:none;"
+  >
 
-    <p>Har I allerede en konto? <a href="/users/login">Log ind</a></p>
-  </main>
-</body>
-</html>
+  <!-- Preview grid -->
+  <div id="preview" class="preview"></div>
+
+  <!-- Upload-knap -->
+  <button id="postButton" type="submit">Opslå</button>
+</form>
+
+<!-- JS til drag & drop og preview -->
+<script src="/javascripts/uploads.js"></script>
