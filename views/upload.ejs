@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opret virksomhed</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Opret virksomhed</h1>
+
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+    <% if (msg)   { %><div class="alert alert-success"><%= msg %></div><% } %>
+
+    <form action="/users/signup" method="POST" class="form">
+      <label>Virksomhedsnavn</label>
+      <input type="text" name="name" required />
+
+      <label>Brugernavn</label>
+      <input type="text" name="username" required />
+
+      <label>Virksomheds-e-mail</label>
+      <input type="email" name="email" />
+
+      <label>Kodeord</label>
+      <input type="password" name="password" required />
+
+      <button type="submit">Opret virksomhedskonto</button>
+    </form>
+
+    <p>Har I allerede en konto? <a href="/users/login">Log ind</a></p>
+  </main>
+</body>
+</html>

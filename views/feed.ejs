@@ -1,0 +1,73 @@
+<h1>Opslag</h1>
+
+<% if (typeof user !== "undefined" && user) { %>
+  <p><a href="/upload">Lav nyt opslag</a></p>
+<% } else { %>
+  <p><em>Log ind for at lave opslag.</em></p>
+<% } %>
+
+<div class="feed-container">
+
+  <% if (posts.length === 0) { %>
+
+      <p>Ingen opslag endnu.</p>
+
+  <% } else { %>
+
+      <% posts.forEach(post => { %>
+
+        <div class="post">
+
+          <div class="post-header">
+            <strong><%= post.author %></strong>
+            <span><%= post.date %></span>
+          </div>
+
+          <p><%= post.text %></p>
+
+          <% if (post.imageUrl) { %>
+            <img src="<%= post.imageUrl %>" alt="Post billede" class="post-image">
+          <% } %>
+
+          <div class="comments">
+            <% const comments = post.comments || []; %>
+
+            <% if (user) { %>
+              <form class="comment-form" action="/feed/<%= post.id %>/comments" method="POST">
+                <input
+                  type="text"
+                  name="comment"
+                  placeholder="Skriv kommentar"
+                  aria-label="Skriv kommentar"
+                  required
+                >
+                <button type="submit">Opslå</button>
+              </form>
+            <% } else { %>
+              <p><em>Log ind for at skrive en kommentar.</em></p>
+            <% } %>
+
+            <% if (comments.length === 0) { %>
+              <p class="no-comments">Ingen kommentarer endnu.</p>
+            <% } else { %>
+              <ul class="comment-list">
+                <% comments.forEach(c => { %>
+                  <li class="comment">
+                    <div class="comment-meta">
+                      <strong><%= c.author %></strong>
+                      <span><%= c.date %></span>
+                    </div>
+                    <p><%= c.text %></p>
+                  </li>
+                <% }) %>
+              </ul>
+            <% } %>
+          </div>
+
+        </div>
+
+      <% }) %>
+
+  <% } %>
+
+</div>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virksomhedslogin</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Virksomhedslogin</h1>
+
+    <% if (error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <% if (msg) { %>
+      <div class="alert alert-success"><%= msg %></div>
+    <% } %>
+
+    <form action="/users/login" method="POST" class="form">
+      <label>Brugernavn</label>
+      <input type="text" name="username" required />
+
+      <label>Kodeord</label>
+      <input type="password" name="password" required />
+
+      <button type="submit">Log ind</button>
+    </form>
+
+    <p>Ingen virksomhedsprofil? 
+      <a href="/users/signup">Opret virksomhed</a>
+    </p>
+
+  </main>
+</body>
+</html>
