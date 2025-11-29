@@ -14,15 +14,16 @@
         <a href="/feed" class="menu-item">Feed</a>
 
         <!-- BRUGER INFO -->
+  
+        <a href="/upload" class="menu-item">Lav opslag</a>
+        <a href="/users/change-password" class="menu-item">Skift adgangskode</a>
+
         <p class="menu-user">
           Logget ind som <strong><%= user.username %></strong>
         </p>
 
-        <a href="/upload" class="menu-item">Lav opslag</a>
-        <a href="/users/change-password" class="menu-item">Skift adgangskode</a>
-
-        <form action="/users/logout" method="POST" style="margin-top: 10px;">
-          <button type="submit" class="menu-item btn-logout">Log ud</button>
+        <form action="/users/logout" method="POST">
+          <button type="submit" class="menu-item">Log ud</button>
         </form>
 
       <% } else { %>
