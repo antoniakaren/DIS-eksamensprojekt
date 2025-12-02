@@ -2,8 +2,8 @@
 // Håndterer signup, login, logout og password-skift.
 
 import { User } from "../models/userModel.js";
-import { User } from "../models/userModel.js";
-import { encrypt} from "../crypto.js"; // ← tilføj denne
+import { encrypt } from "../utils/crypto.js"; // korrekt path
+import { sendWelcomeEmail } from "../controllers/mailController.js"; // *** automatisk mail ***
 
 /*
  * validatePassword(password)
@@ -72,6 +72,12 @@ const encryptedEmail = encrypt(email);
     // Opretter bruger (User.createUser() hasher password)
 const user = new User(null, name, username, encryptedEmail, password);
     const created = await user.createUser();
+  
+// Hent fuld bruger (inkl krypteret mail)
+const newUser = await User.findUserID(created.userID);
+
+// AUTOMATISK VELKOMSTMAIL 
+await sendWelcomeEmail(newUser);
 
     // Opret session
     req.session.userID = created.userID;

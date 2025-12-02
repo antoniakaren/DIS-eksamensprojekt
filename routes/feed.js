@@ -5,16 +5,20 @@ const router = express.Router();
 import posts from "../data/posts.js";
 import { requireLogin } from "../middleware/authMiddleware.js";
 
+import { User } from "../models/userModel.js";
+import { sendCommentNotification } from "../controllers/mailController.js";
+
+
 // GET /feed - offentlig (alle kan se opslag + kommentarer)
 router.get("/", (req, res) => {
   res.render("feed", {
     title: "Feed",
-    posts,          // user kommer nu automatisk fra res.locals.user
+    posts,
   });
 });
 
 // POST /feed/:id/comments - kræver login
-router.post("/:id/comments", requireLogin, (req, res) => {
+router.post("/:id/comments", requireLogin, async (req, res) => { 
   const postId = parseInt(req.params.id, 10);
   const { comment } = req.body;
 
@@ -33,6 +37,21 @@ router.post("/:id/comments", requireLogin, (req, res) => {
     author: req.user.username,
     date: new Date().toLocaleString(),
   });
+
+  // ----------- AUTO MAIL ----------
+  try {
+    const postOwner = await User.findUserByUsername(post.author);
+
+    if (postOwner) {
+      await sendCommentNotification(
+        postOwner,
+        req.user.username,
+        comment.trim()
+      );
+    }
+  } catch (err) {
+    console.error("Fejl ved automatisk kommentar-mail:", err);
+  }
 
   res.redirect("/feed");
 });

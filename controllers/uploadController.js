@@ -4,6 +4,7 @@ import cloudinaryModule from "cloudinary";
 import fs from "fs/promises";
 import posts from "../data/posts.js";
 import { User } from "../models/userModel.js";
+import { sendPostCreatedEmail } from "../controllers/mailController.js";
 
 // Multer setup
 const storage = multer.memoryStorage();
@@ -68,6 +69,8 @@ export async function handleUpload(req, res) {
 
     // Indsæt nyeste øverst
     posts.unshift(newPost);
+
+    await sendPostCreatedEmail(user, text);
 
     res.redirect("/feed");
   } catch (err) {

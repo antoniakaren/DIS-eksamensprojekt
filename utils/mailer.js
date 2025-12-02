@@ -6,10 +6,10 @@ import nodemailer from "nodemailer";
 // Opretter en "transporter", der repræsenterer forbindelsen til mailserveren.
 // Her bruger vi Gmail, men det kunne også være anden udbyder.
 const transporter = nodemailer.createTransport({
-  service: "Gmail",
+  service: "gmail",
+  port: 465,
+  secure: true,
   auth: {
-    // Disse kommer fra .env-filen, så vi ikke hardcoder login i koden
-    // HUSK OPRET .env-FIL
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
   },
