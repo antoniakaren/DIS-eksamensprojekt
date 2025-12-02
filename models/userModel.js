@@ -1,7 +1,7 @@
 // models/userModel.js
 // User-model der bruger SQLite helpers (get/all/run)
 
-import { get, all, run } from "../database/userdb.js";
+import { get, all, run } from "../database/db.js";
 import bcrypt from "bcrypt";
 
 class User {

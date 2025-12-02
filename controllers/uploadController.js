@@ -2,8 +2,8 @@
 import multer from "multer";
 import cloudinaryModule from "cloudinary";
 import fs from "fs/promises";
-import posts from "../data/posts.js";
 import { User } from "../models/userModel.js";
+import { Post } from "../models/postModel.js";
 import { sendPostCreatedEmail } from "../controllers/mailController.js";
 
 // Multer setup
@@ -56,19 +56,9 @@ export async function handleUpload(req, res) {
       await fs.unlink(tmpFilePath);
     }
 
-    // Opretter et nyt post-objekt i den lokale posts-liste
-    const newPost = {
-      id: posts.length + 1,
-      text,
-      imageUrl,
-      author: user.username,   // fra den loggede bruger
-      userID: user.userID,
-      date: new Date().toLocaleString(),
-      comments: [],
-    };
+    const date = new Date().toLocaleString();
+    await Post.create(user.userID, text, imageUrl, date);
 
-    // Indsæt nyeste øverst
-    posts.unshift(newPost);
 
     await sendPostCreatedEmail(user, text);
 

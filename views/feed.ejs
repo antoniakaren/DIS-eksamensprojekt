@@ -21,7 +21,15 @@
           <div class="post-header">
             <strong><%= post.author %></strong>
             <span><%= post.date %></span>
-          </div>
+          
+            <% if (user && user.userID === post.userID) { %>
+              <form action="/feed/<%= post.postID %>/delete" method="POST" class="delete-form">
+                <button type="submit" class="delete-btn">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </form>
+            <% } %>
+          </div>          
 
           <p><%= post.text %></p>
 

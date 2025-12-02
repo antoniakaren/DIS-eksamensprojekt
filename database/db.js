@@ -36,6 +36,31 @@ db.serialize(() => {
       password TEXT NOT NULL
     )
   `);
+  
+  console.log("Ensuring Posts-table exists");
+  db.run(`
+    CREATE TABLE IF NOT EXISTS Posts (
+      postID   INTEGER PRIMARY KEY AUTOINCREMENT,
+      userID   INTEGER NOT NULL,
+      text     TEXT,
+      imageUrl TEXT,
+      date     TEXT,
+      FOREIGN KEY (userID) REFERENCES Users(userID)
+    )
+  `);
+
+  console.log("Ensuring Comments-table exists");
+  db.run(`
+    CREATE TABLE IF NOT EXISTS Comments (
+      commentID INTEGER PRIMARY KEY AUTOINCREMENT,
+      postID    INTEGER NOT NULL,
+      userID    INTEGER NOT NULL,
+      text      TEXT,
+      date      TEXT,
+      FOREIGN KEY (postID) REFERENCES Posts(postID),
+      FOREIGN KEY (userID) REFERENCES Users(userID)
+    )
+  `);
 });
 
 /**
