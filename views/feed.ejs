@@ -1,9 +1,11 @@
 <h1>Opslag</h1>
 
 <% if (typeof user !== "undefined" && user) { %>
-  <p><a href="/upload">Lav nyt opslag</a></p>
+  <p>
+    <a href="/upload" class="new-post-btn">Lav nyt opslag</a>
+  </p>  
 <% } else { %>
-  <p><em>Log ind for at lave opslag.</em></p>
+  <p>Log ind for at lave opslag.</p>
 <% } %>
 
 <div class="feed-container">
@@ -52,7 +54,7 @@
                 <button type="submit">Opslå</button>
               </form>
             <% } else { %>
-              <p><em>Log ind for at skrive en kommentar.</em></p>
+              <p>Log ind for at skrive en kommentar.</p>
             <% } %>
 
             <% if (comments.length === 0) { %>
