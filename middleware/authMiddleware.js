@@ -16,7 +16,7 @@ async function requireLogin(req, res, next) {
     if (!user) {
       // Session findes, men brugeren fandtes ikke → outdated session
       req.session.destroy(() => {});
-      return res.redirect("/auth/login");
+      return res.redirect("/users/login");
     }
 
     // 3. Tilføj req.user, så controllers kan bruge data
