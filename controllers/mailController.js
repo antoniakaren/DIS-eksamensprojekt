@@ -5,7 +5,8 @@ import { decrypt } from "../utils/crypto.js";
 
 export async function sendWelcomeEmail(user) {
   try {
-    const email = user.email; // <-- plaintext, ingen decrypt endnu
+    // Email er lagret krypteret i databasen, så vi dekrypterer før afsendelse
+    const email = decrypt(user.email);
 
     await mailToUser(
       email,
