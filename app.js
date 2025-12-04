@@ -4,7 +4,7 @@ import path from "path";
 import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
 import morgan from "morgan";
-
+import responseTime from "response-time";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
@@ -23,6 +23,9 @@ const __dirname = dirname(__filename);
 
 // Logging
 app.use(morgan("dev"));
+
+//X-response-time - måler responstid pr. request med middleware
+app.use (responseTime())
 
 // Body parsing
 app.use(express.urlencoded({ extended: true }));
