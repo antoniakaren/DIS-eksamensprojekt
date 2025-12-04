@@ -21,6 +21,7 @@
     "multer": "^2.0.2",
     "mysql2": "^3.11.3",
     "nodemailer": "^7.0.10",
+    "response-time": "^2.3.4",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
   }
