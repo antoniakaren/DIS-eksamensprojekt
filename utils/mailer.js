@@ -6,12 +6,12 @@ import nodemailer from "nodemailer";
 // Opretter en "transporter", der repræsenterer forbindelsen til mailserveren.
 // Her bruger vi Gmail, men det kunne også være anden udbyder.
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  port: 465,
-  secure: true,
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: false, // Mailersend SMTP bruger TLS på port 587
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
 });
 
