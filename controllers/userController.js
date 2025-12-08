@@ -2,7 +2,7 @@
 // Håndterer signup, login, logout og password-skift.
 
 import { User } from "../models/userModel.js";
-import { encrypt } from "../utils/crypto.js"; // korrekt path
+import { encrypt, decrypt } from "../utils/crypto.js";
 import { sendWelcomeEmail } from "../controllers/mailController.js"; // *** automatisk mail ***
 
 /*

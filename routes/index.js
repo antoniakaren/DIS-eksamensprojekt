@@ -2,7 +2,7 @@ import express from "express";
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.render('index', { title: 'Min app' });
+  res.render('index', { title: 'Understory Social' });
 });
 
 //loadtest-endpoint (CPU-tung beregning) lav evt ny fil til test???

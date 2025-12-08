@@ -4,16 +4,19 @@
 import nodemailer from "nodemailer";
 
 // Opretter en "transporter", der repræsenterer forbindelsen til mailserveren.
-// Her bruger vi Gmail, men det kunne også være anden udbyder.
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: false, // Mailersend SMTP bruger TLS på port 587
+  host: process.env.SMTP_HOST,   // smtp.mailersend.net
+  port: Number(process.env.SMTP_PORT), // 587
+  secure: false, // Skal være false på 587
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
+  tls: {
+    rejectUnauthorized: false, 
+  },
 });
+
 
 // Tester om forbindelsen til SMTP-serveren virker, når serveren starter
 transporter.verify((error) => {
@@ -31,17 +34,18 @@ transporter.verify((error) => {
  * textMsg    - Selve tekstindholdet i mailen (plain text)
  */
 export async function mailToUser(recipients, subjectMsg, textMsg) {
-  const senderName = "Understory Feed";
-  const senderAddress = process.env.MAIL_USER; // Samme konto som vi logger ind med
 
   try {
-    await transporter.sendMail({
-      from: `${senderName} <${senderAddress}>`, // Afsender, som modtageren ser
-      to: recipients, // Modtager
-      subject: subjectMsg, // Emnefelt
-      text: textMsg, // Tekstindhold
-    });
-
+  await transporter.sendMail({
+    envelope: {
+      from: "MS_xOKVJ1@understory.social",
+      to: recipients,
+    },
+    from: "MS_xOKVJ1@understory.social",
+    to: recipients,
+    subject: subjectMsg,
+    text: textMsg,
+  });
     console.log("Email sendt afsted");
   } catch (error) {
     console.error("Fejl ved afsendelse af email:", error);
