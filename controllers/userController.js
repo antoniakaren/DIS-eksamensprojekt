@@ -3,13 +3,9 @@
 
 import { User } from "../models/userModel.js";
 import { encrypt, decrypt } from "../utils/crypto.js";
-import { sendWelcomeEmail } from "../controllers/mailController.js"; // *** automatisk mail ***
+import { sendWelcomeEmail } from "../controllers/mailController.js"; // bruges til at sende automatisk velkomstmail
 
-/*
- * validatePassword(password)
- * - returnerer string med fejlbesked hvis password er ugyldigt
- * - returnerer null hvis password er OK
- */
+//funktion til at validere password-regler
 function validatePassword(password) {
   if (!password || password.length < 8) return "Password has to be at least 8 characters";
   if (!/[a-z]/.test(password)) return "Password has to include a lowercase letter";
@@ -18,27 +14,18 @@ function validatePassword(password) {
   return null;
 }
 
-/*
- * GET /auth/login
- * Viser login-siden.
- */
+// GET /auth/login – viser login-siden
 async function renderLogin(req, res) {
   res.render("login", { error: null, msg: null });
 }
 
-/*
- * POST /auth/signup
- * - læser input fra req.body
- * - validerer brugernavn og password
- * - tjekker om brugernavn allerede findes
- * - opretter bruger (modellen hasher password)
- * - logger brugeren ind og redirecter til feed
- */
+// POST /auth/signup – opretter ny bruger og logger ind
+// læser input, validerer, tjekker om brugernavn findes, opretter bruger og laver session
 async function signup(req, res) {
   try {
     const { name, username, email, password } = req.body;
 
-    // Basal validering af brugernavn
+    // basal validering af brugernavn
     if (!username || username.length < 3) {
       return res.status(400).render("signup", {
         title: "Opret virksomhed",
@@ -47,7 +34,7 @@ async function signup(req, res) {
       });
     }
 
-    // Password-regler
+    // password-regler
     const pwdErr = validatePassword(password);
     if (pwdErr) {
       return res.status(400).render("signup", { 
@@ -57,7 +44,7 @@ async function signup(req, res) {
       });
     }
 
-    // Unikheds-tjek på brugernavn
+    // tjek om brugernavn allerede findes i databasen
     const existing = await User.findUserByUsername(username);
     if (existing) {
       return res.status(409).render("signup", { 
@@ -66,23 +53,24 @@ async function signup(req, res) {
         msg: null 
       });
     }
-// Krypter email før vi sender den til modellen
-const encryptedEmail = encrypt(email);
 
-    // Opretter bruger (User.createUser() hasher password)
-const user = new User(null, name, username, encryptedEmail, password);
+    // krypter email før vi sender den til modellen (beskytter persondata i databasen)
+    const encryptedEmail = encrypt(email);
+
+    // opretter bruger – modellen hasher selv password med bcrypt
+    const user = new User(null, name, username, encryptedEmail, password);
     const created = await user.createUser();
   
-// Hent fuld bruger (inkl krypteret mail)
-const newUser = await User.findUserID(created.userID);
+    // hent fuld bruger (inkl krypteret mail) efter oprettelse
+    const newUser = await User.findUserID(created.userID);
 
-// AUTOMATISK VELKOMSTMAIL 
-await sendWelcomeEmail(newUser);
+    // sender automatisk velkomstmail til den nye bruger
+    await sendWelcomeEmail(newUser);
 
-    // Opret session
+    // opretter session så brugeren bliver logget ind
     req.session.userID = created.userID;
 
-    // Redirect til feed ved succes
+    // redirect til feed ved succesfuld signup
     res.redirect("/feed");
   } catch (err) {
     console.error("Signup error:", err);
@@ -94,16 +82,13 @@ await sendWelcomeEmail(newUser);
   }
 }
 
-/*
- * POST /auth/login
- * - læser brugernavn og password
- * - verificerer via User.verifyLogin (bcrypt)
- * - sætter session og redirecter til feed
- */
+// POST /auth/login – logger bruger ind
+// læser brugernavn/password, verificerer via modellen og sætter session
 async function login(req, res) {
   try {
     const { username, password } = req.body;
 
+    // verifyLogin tjekker brugernavn + password med bcrypt
     const authed = await User.verifyLogin(username, password);
     if (!authed) {
       return res
@@ -111,8 +96,10 @@ async function login(req, res) {
         .render("login", { error: "Incorrect username or password", msg: null });
     }
 
+    // gemmer userID i session, så vi kan genkende brugeren på andre sider
     req.session.userID = authed.userID;
 
+    // redirect til feed hvis login er ok
     res.redirect("/feed");
   } catch (err) {
     console.error("Login error:", err);
@@ -122,10 +109,8 @@ async function login(req, res) {
   }
 }
 
-/*
- * (valgfri) GET /user/feed – hvis du bruger denne i stedet for feedRouter
- * Henter bruger ud fra session og viser feed-view.
- */
+// (valgfri) GET /user/feed – hvis denne bruges i stedet for en separat feedRouter
+// henter bruger ud fra session og renderer feed-view
 async function renderFeed(req, res) {
   try {
     const userID = req.session.userID;
@@ -143,18 +128,14 @@ async function renderFeed(req, res) {
   }
 }
 
-/*
- * GET /auth/change-password
- */
+// GET /auth/change-password – viser siden til skift af password
 async function renderChangePassword(req, res) {
   const userID = req.session.userID;
   if (!userID) return res.status(401).send("Unauthorized");
   res.render("change-password", { error: null, msg: null });
 }
 
-/*
- * POST /auth/change-password
- */
+// POST /auth/change-password – skifter password for den nuværende bruger
 async function changePassword(req, res) {
   try {
     const userID = req.session.userID;
@@ -162,6 +143,7 @@ async function changePassword(req, res) {
 
     const { oldPassword, newPassword } = req.body;
 
+    // validerer det nye password med samme regler som ved signup
     const pwdErr = validatePassword(newPassword);
     if (pwdErr) {
       return res
@@ -169,6 +151,7 @@ async function changePassword(req, res) {
         .render("change-password", { error: pwdErr, msg: null });
     }
 
+    // finder brugeren i databasen
     const user = await User.findUserID(userID);
     if (!user) {
       return res
@@ -176,6 +159,7 @@ async function changePassword(req, res) {
         .render("change-password", { error: "User not found", msg: null });
     }
 
+    // tjekker om det gamle password er korrekt via verifyLogin
     const ok = await User.verifyLogin(user.username, oldPassword);
     if (!ok) {
       return res
@@ -186,8 +170,10 @@ async function changePassword(req, res) {
         });
     }
 
+    // opdaterer password i databasen (hashing sker i modellen)
     await User.updateUserPassword(user.username, newPassword);
 
+    // redirect til feed efter succesfuldt password-skift
     res.redirect("/feed");
   } catch (err) {
     console.error("Change password error:", err);
@@ -200,9 +186,8 @@ async function changePassword(req, res) {
   }
 }
 
-/*
- * POST /auth/logout
- */
+// POST /auth/logout – logger brugeren ud
+// destruerer session og sletter session-cookien
 async function logout(req, res) {
   req.session.destroy((err) => {
     if (err) return res.status(500).send("Failed to log out");

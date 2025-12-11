@@ -17,7 +17,6 @@ import usersRouter from "./routes/users.js";
 
 const app = express();
 
-// --- ESM __dirname fix ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -49,7 +48,7 @@ app.set("layout", "layout");
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 
-// 🔑 GLOBAL: sæt req.user og res.locals.user for ALLE requests
+//sætter req.user og res.locals.user for ALLE requests
 app.use(attachUserIfLoggedIn);
 app.use((req, res, next) => {
   res.locals.user = req.user || null;

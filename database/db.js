@@ -63,9 +63,7 @@ db.serialize(() => {
   `);
 });
 
-/**
- * Helper: kør et SELECT, returnér én række
- */
+// hjælpefunktion: kør et SELECT, returnér én række
 export function get(sql, params = []) {
   return new Promise((resolve, reject) => {
     db.get(sql, params, (err, row) => {
@@ -75,9 +73,7 @@ export function get(sql, params = []) {
   });
 }
 
-/**
- * Helper: kør et SELECT, returnér alle rækker
- */
+// hjælpefunktion: kør et SELECT, returnér alle rækker
 export function all(sql, params = []) {
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
@@ -87,9 +83,7 @@ export function all(sql, params = []) {
   });
 }
 
-/**
- * Helper: kør INSERT/UPDATE/DELETE
- */
+//hjælper: kør INSERT/UPDATE/DELETE
 export function run(sql, params = []) {
   return new Promise((resolve, reject) => {
     db.run(sql, params, function (err) {

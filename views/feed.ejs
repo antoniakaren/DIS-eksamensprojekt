@@ -1,29 +1,35 @@
 <h1>Opslag</h1>
 
+<!-- Hvis bruger er logget ind, vis knap til at lave nyt opslag -->
 <% if (typeof user !== "undefined" && user) { %>
   <p>
     <a href="/upload" class="new-post-btn">Lav nyt opslag</a>
   </p>  
 <% } else { %>
+  <!-- gæster kan kun se opslag -->
   <p>Log ind for at lave opslag.</p>
 <% } %>
 
+
+
 <div class="feed-container">
 
+  <!-- Hvis der ikke findes opslag -->
   <% if (posts.length === 0) { %>
 
       <p>Ingen opslag endnu.</p>
 
   <% } else { %>
 
+      <!-- Loop gennem alle opslag -->
       <% posts.forEach(post => { %>
 
         <div class="post">
-
           <div class="post-header">
             <strong><%= post.author %></strong>
             <span><%= post.date %></span>
           
+            <!-- Delete-knap vises kun hvis nuværende bruger ejer opslaget -->
             <% if (user && user.userID === post.userID) { %>
               <form action="/feed/<%= post.postID %>/delete" method="POST" class="delete-form">
                 <button type="submit" class="delete-btn">
@@ -33,15 +39,21 @@
             <% } %>
           </div>          
 
+          <!-- Teksten i opslaget -->
           <p><%= post.text %></p>
 
+          <!-- Hvis opslaget indeholder et billede, vis det -->
           <% if (post.imageUrl) { %>
             <img src="<%= post.imageUrl %>" alt="Post billede" class="post-image">
           <% } %>
 
+
+
+          <!-- kommentarsektion-->
           <div class="comments">
             <% const comments = post.comments || []; %>
 
+            <!-- Kommentarformular (kun for logged-in users) -->
             <% if (user) { %>
               <form class="comment-form" action="/feed/<%= post.postID %>/comments" method="POST">
                 <input
@@ -57,9 +69,14 @@
               <p>Log ind for at skrive en kommentar.</p>
             <% } %>
 
+
+
+            <!-- Hvis opslaget ingen kommentarer har -->
             <% if (comments.length === 0) { %>
               <p class="no-comments">Ingen kommentarer endnu.</p>
+
             <% } else { %>
+              <!-- Liste af kommentarer -->
               <ul class="comment-list">
                 <% comments.forEach(c => { %>
                   <li class="comment">
@@ -72,7 +89,8 @@
                 <% }) %>
               </ul>
             <% } %>
-          </div>
+
+          </div> 
 
         </div>
 

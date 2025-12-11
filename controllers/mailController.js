@@ -1,11 +1,14 @@
 // controllers/mailController.js
-import { mailToUser } from "../utils/mailer.js";
-import { decrypt } from "../utils/crypto.js";
+// Håndterer afsendelse af automatiske emails i applikationen
+
+import { mailToUser } from "../utils/mailer.js"; // funktion der faktisk sender selve mailen
+import { decrypt } from "../utils/crypto.js";     // bruges til at dekryptere email fra databasen
 
 
+// Sender velkomstmail når en ny bruger oprettes
 export async function sendWelcomeEmail(user) {
   try {
-    // Email er lagret krypteret i databasen, så vi dekrypterer før afsendelse
+    // email er gemt krypteret i databasen – vi dekrypterer før afsendelse
     const email = decrypt(user.email);
 
     await mailToUser(
@@ -18,11 +21,11 @@ export async function sendWelcomeEmail(user) {
   }
 }
 
-/**
- * Send mail når en bruger laver et opslag
- */
+
+// Sender mail når en bruger har oprettet et opslag
 export async function sendPostCreatedEmail(user, postText) {
   try {
+    // dekrypter email, da den er lagret sikkert
     const email = decrypt(user.email);
 
     await mailToUser(
@@ -35,11 +38,11 @@ export async function sendPostCreatedEmail(user, postText) {
   }
 }
 
-/**
- * Send mail når en kommentar kommer på et opslag
- */
+
+// Sender mail til opslagsejer når en anden bruger kommenterer
 export async function sendCommentNotification(postOwner, commentAuthor, commentText) {
   try {
+    // dekrypter email for opslagsejeren
     const email = decrypt(postOwner.email);
 
     await mailToUser(

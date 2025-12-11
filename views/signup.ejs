@@ -6,19 +6,25 @@
   <title>Opret virksomhed</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
+
 <body>
   <main class="container">
     <h1>Opret virksomhed</h1>
 
+    <!-- viser fejlbesked, fx ugyldigt password eller brugernavn der allerede findes -->
     <% if (error) { %>
       <div class="alert alert-error"><%= error %></div>
     <% } %>
 
+    <!-- viser succes- eller informationsbeskeder fra controlleren -->
     <% if (msg) { %>
       <div class="alert alert-success"><%= msg %></div>
     <% } %>
 
+    <!-- Formular til at oprette ny virksomhedskonto -->
+    <!-- POST'er til signup-controlleren, hvor validering + hashing + email-kryptering sker -->
     <form action="/users/signup" method="POST" class="form">
+
       <label>Virksomhedsnavn</label>
       <input type="text" name="name" required />
 
@@ -34,9 +40,11 @@
       <button type="submit">Opret virksomhed</button>
     </form>
 
+    <!-- Link tilbage til login hvis virksomheden allerede har en konto -->
     <p>Har virksomheden allerede en konto?  
       <a href="/users/login">Log ind</a>
     </p>
+
   </main>
 </body>
 </html>

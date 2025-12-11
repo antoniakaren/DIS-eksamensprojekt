@@ -28,10 +28,10 @@ transporter.verify((error) => {
 });
 
 /*
- * mailToUser: Generel hjælpefunktion til at sende en email.
- * recipients - Modtagerens email (eller flere, adskilt med komma)
- * subjectMsg - Emnet på mailen
- * textMsg    - Selve tekstindholdet i mailen (plain text)
+ mailToUser: Generel hjælpefunktion til at sende en email.
+ recipients - Modtagerens email (eller flere, adskilt med komma)
+ subjectMsg - Emnet på mailen
+ textMsg - Selve tekstindholdet i mailen (plain text)
  */
 export async function mailToUser(recipients, subjectMsg, textMsg) {
 
